@@ -1,8 +1,14 @@
-# devops-local-stack
+# DevOps-local-stack
 Production-ready Docker Compose stack with monitoring
 
-Structure
+<!-- TOC -->
+* [devops-local-stack](#devops-local-stack)
+  * [Structure:](#structure)
+<!-- TOC -->
 
+## Structure:
+
+```
 devops-local-stack/
 ├── app/
 │   └── src/
@@ -19,3 +25,4 @@ devops-local-stack/
 ├── .gitignore
 ├── LICENSE
 └── README.md
+```
