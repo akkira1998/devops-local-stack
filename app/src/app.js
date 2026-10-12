@@ -271,8 +271,6 @@ async function gracefulShutdown(signal) {
 process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
 process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
-// ============ START SERVER ============
-
 async function start() {
   try {
     await initializeConnections();
