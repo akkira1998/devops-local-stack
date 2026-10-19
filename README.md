@@ -3,9 +3,10 @@ Production-ready Docker Compose stack with monitoring
 
 <!-- TOC -->
 * [DevOps-local-stack](#devops-local-stack)
-  * [Structure:](#structure)
+  * [Структура репозитория:](#структура-репозитория)
   * [Цель](#цель)
   * [Технологическое решение](#технологическое-решение)
+    * [Схема проекта](#схема-проекта)
     * [Аркестрация](#аркестрация)
     * [База данных (БД)](#база-данных-бд)
     * [Кэш](#кэш)
@@ -14,7 +15,7 @@ Production-ready Docker Compose stack with monitoring
     * [Мониторинг](#мониторинг)
 <!-- TOC -->
 
-## Structure:
+## Структура репозитория:
 
 ```
 devops-local-stack/
@@ -41,6 +42,10 @@ devops-local-stack/
 - Быстрое развертывание
 
 ## Технологическое решение
+
+### Схема проекта
+
+![image1.jpg](images/image1.jpg)
 
 ### Аркестрация
 
