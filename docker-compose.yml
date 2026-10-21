@@ -1,4 +1,3 @@
-version: '3.9'
 
 services:
 
@@ -10,7 +9,6 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
       - "80:80"
-      - "443:443"
     depends_on:
       app:
         condition: service_healthy
@@ -22,9 +20,14 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 64M
     restart: unless-stopped
 
-  # ============ NODE.JS APP ============
+  # ============ NODE.JS APP (1 replica) ============
   app:
     build:
       context: ./app
@@ -54,6 +57,11 @@ services:
       timeout: 5s
       retries: 3
       start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.75'
+          memory: 256M
     restart: unless-stopped
 
   # ============ POSTGRESQL ============
@@ -67,8 +75,8 @@ services:
     volumes:
       - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql:ro
       - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
+    expose:
+      - 5432
     networks:
       - app-network
     healthcheck:
@@ -77,6 +85,11 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 384M
     restart: unless-stopped
 
   # ============ REDIS ============
@@ -96,6 +109,11 @@ services:
       timeout: 3s
       retries: 3
       start_period: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 128M
     restart: unless-stopped
 
   # ============ RABBITMQ ============
@@ -107,8 +125,9 @@ services:
       RABBITMQ_DEFAULT_PASS: guest
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
+    expose:
+      - 5672
     ports:
-      - "5672:5672"
       - "15672:15672"
     networks:
       - app-network
@@ -118,6 +137,11 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
     restart: unless-stopped
 
   # ============ PROMETHEUS ============
@@ -131,9 +155,9 @@ services:
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
-      - '--storage.tsdb.retention.time=30d'
-    ports:
-      - "9090:9090"
+      - '--storage.tsdb.retention.time=7d'
+    expose:
+      - 9090
     networks:
       - app-network
     healthcheck:
@@ -142,6 +166,11 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 384M
     restart: unless-stopped
 
   # ============ GRAFANA ============
@@ -156,6 +185,8 @@ services:
       - grafana_data:/var/lib/grafana
       - ./monitoring/grafana/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml:ro
       - ./monitoring/grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml:ro
+    expose:
+      - 3000
     ports:
       - "3001:3000"
     depends_on:
@@ -168,6 +199,11 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
     restart: unless-stopped
 
   # ============ ALERTMANAGER ============
@@ -180,8 +216,8 @@ services:
     command:
       - '--config.file=/etc/alertmanager/alertmanager.yml'
       - '--storage.path=/alertmanager'
-    ports:
-      - "9093:9093"
+    expose:
+      - 9093
     networks:
       - app-network
     healthcheck:
@@ -189,21 +225,20 @@ services:
       interval: 15s
       timeout: 5s
       retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 128M
     restart: unless-stopped
 
 volumes:
   postgres_data:
-    driver: local
   redis_data:
-    driver: local
   rabbitmq_data:
-    driver: local
   prometheus_data:
-    driver: local
   grafana_data:
-    driver: local
   alertmanager_data:
-    driver: local
 
 networks:
   app-network:

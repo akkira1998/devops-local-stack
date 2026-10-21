@@ -54,4 +54,3 @@ module.exports = {
   usersCreated,
   getMetrics: () => promClient.register.metrics()
 };
-EOF
