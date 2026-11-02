@@ -14,6 +14,8 @@ RUN npm ci --only=production
 # На этом этапе берём только необходимое
 FROM node:18-alpine
 
+RUN apk add --no-cache curl
+
 WORKDIR /app
 
 # Копируем node_modules из builder
